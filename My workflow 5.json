@@ -1,0 +1,132 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fe16ff29-f453-4fe7-803d-be63107d9c3a",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "113d85e2-1ad5-4c2e-9eed-da3f8dd3079c",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "fe16ff29-f453-4fe7-803d-be63107d9c3a"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate one funny joke based on this mood: {{ $json.body.mood }}.\n\nReturn only one joke. Do not give advice, suggestions, options, or explanations.",
+        "options": {
+          "systemMessage": "",
+          "enableStreaming": false
+        }
+      },
+      "id": "a8dced73-7486-4e88-b58e-3ef65c31b0df",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "2263ab2a-b62d-4ac4-a8de-539233dc40a0",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        272
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      },
+      "notes": "={{\n  \"Generate one funny and friendly joke for someone whose mood is \"\n  + $json.body.mood\n  + \". If the mood is sad or stressed, make it uplifting. Return only the joke.\"\n}}"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"joke\": $json.output } }}",
+        "options": {}
+      },
+      "id": "bd6b8d9a-e9ff-42f6-aff3-3c9327dbab19",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        576,
+        16
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "5984fb5e-8a45-4826-b4e1-56f9de6a0673",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "11e5bc1da799af4289143427764d7b99d82df8cfa143922c2f81681d9806063d"
+  },
+  "nodeGroups": [],
+  "id": "IEf77haoMeztkaI9",
+  "tags": []
+}
